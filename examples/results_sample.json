@@ -1,0 +1,18 @@
+{
+  "target": "https://example.com",
+  "final_detection": {
+    "waf_detected": true,
+    "primary_waf": "Cloudflare",
+    "confidence_score": 92,
+    "confidence_level": "High"
+  },
+  "statistics": {
+    "requests_sent": 24,
+    "blocks_detected": 8
+  },
+  "tool_info": {
+    "name": "Advanced WAF Detector",
+    "author": "Veerxx",
+    "github": "https://github.com/Veerxx"
+  }
+}
