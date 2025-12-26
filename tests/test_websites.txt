@@ -1,0 +1,78 @@
+
+## **4. Utility Scripts:**
+
+### **`utils/signature_updater.py`**
+```python
+#!/usr/bin/env python3
+"""
+WAF Signature Updater
+Automatically updates WAF signatures from online sources
+"""
+
+import json
+import requests
+import hashlib
+import os
+from datetime import datetime
+
+SIGNATURE_SOURCES = [
+    "https://raw.githubusercontent.com/EnableSecurity/wafw00f/master/wafw00f/plugins.json",
+    "https://raw.githubusercontent.com/Ekultek/WhatWaf/master/whatwaf/signatures/signatures.json"
+]
+
+def update_signatures():
+    """Update WAF signatures from online sources"""
+    print("[*] Updating WAF signatures...")
+    
+    all_signatures = {}
+    
+    for source in SIGNATURE_SOURCES:
+        try:
+            print(f"[+] Fetching from: {source}")
+            response = requests.get(source, timeout=10)
+            
+            if response.status_code == 200:
+                try:
+                    data = response.json()
+                    # Process different formats
+                    if 'signatures' in data:
+                        signatures = data['signatures']
+                    elif 'wafs' in data:
+                        signatures = data['wafs']
+                    else:
+                        signatures = data
+                    
+                    # Merge signatures
+                    for waf_name, waf_data in signatures.items():
+                        if waf_name not in all_signatures:
+                            all_signatures[waf_name] = waf_data
+                    
+                    print(f"[+] Added {len(signatures)} signatures from {source}")
+                except json.JSONDecodeError:
+                    print(f"[-] Failed to parse JSON from {source}")
+            else:
+                print(f"[-] Failed to fetch {source}: {response.status_code}")
+                
+        except Exception as e:
+            print(f"[-] Error fetching {source}: {e}")
+    
+    # Save updated signatures
+    if all_signatures:
+        output = {
+            'updated': datetime.now().isoformat(),
+            'sources': SIGNATURE_SOURCES,
+            'signature_count': len(all_signatures),
+            'signatures': all_signatures
+        }
+        
+        os.makedirs('config', exist_ok=True)
+        with open('config/waf_signatures.json', 'w') as f:
+            json.dump(output, f, indent=2)
+        
+        print(f"[+] Saved {len(all_signatures)} signatures to config/waf_signatures.json")
+        print(f"[+] Update completed at: {datetime.now().isoformat()}")
+    else:
+        print("[-] No signatures were updated")
+
+if __name__ == "__main__":
+    update_signatures()
